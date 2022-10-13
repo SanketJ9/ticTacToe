@@ -2,6 +2,7 @@ var innerBox = $(".innerbox")
 var player = 1;
 var crossarr = [];
 var cirarr = [];
+var isStriked = false;
 var winCases= {
   h1 : [1,2,3],
   h2 : [4,5,6],
@@ -16,37 +17,62 @@ var winCases= {
 $( document ).ready(function() {
   $('.cross-cont').hide();
   $('.circle').hide();
+  $('.overlay').hide();
 });
 
 for (var i = 0 ; i < innerBox.length; i++){
-    $(innerBox[i]).click(function() {
-        // $(this).find('.cross-cont').show();
-        // $(this).find('.circle').show();
-        // player++;
+  $(innerBox[i]).click(function() {
+    if (isStriked == false) {
+      if(player % 2 == 0){
+        $(this).find('.cross-cont').show();
+        player++;
+      }else{
+        $(this).find('.circle').show();
+        player++;
+      }
+
+      console.log("player",player)
+
+      if($(this).children('.cross-cont').attr("style") == ""){
+        crossarr.push($(this).data("pos"))
+        console.log("cross",crossarr);
+    
+      }
+      if($(this).children('.circle').attr("style") == ""){
+        cirarr.push($(this).data("pos"))
+        console.log("circle",cirarr);
+      }
+
+      check();
+      $(this).off("click");
+
+      if(isStriked == true){
+        $(".reset").addClass("reset-active");
         if(player % 2 == 0){
-          $(this).find('.cross-cont').show();
-          player++;
+          $('.overlay').show();
+          $('.text').text("Player 1 Wins")
         }else{
-          $(this).find('.circle').show();
-          player++;
+          $('.overlay').show();
+          $('.text').text("Player 2 Wins")
         }
+      }
 
-        if($(this).children('.cross-cont').attr("style") == ""){
-          crossarr.push($(this).data("pos"))
-          console.log("cross",crossarr);
-      
-        }
-        if($(this).children('.circle').attr("style") == ""){
-          cirarr.push($(this).data("pos"))
-          console.log("circle",cirarr);
-        }
+      if(isStriked == false && player == 10){
+        $(".reset").addClass("reset-active");
+        $('.overlay').show();
+        $('.text').text("It's a Draw")
+      }
 
-        check();
-        $(this).off("click");
-      }); 
-      
-      
+    }  
+  }); 
 }
+
+$(".reset").click(function(){
+  location.reload();
+})
+
+  $('.cross-cont').hide();
+  $('.circle').hide();
 
 function check(){
   var key = "";
@@ -56,8 +82,6 @@ function check(){
       key = getKeyByValue(winCases,elem);
     }else if(elem.every(function(val){ return crossarr.includes(val)})) {
       key = getKeyByValue(winCases,elem);
-    }else{
-      console.log("draw")
     }
   });
 
@@ -65,27 +89,35 @@ function check(){
   switch (key) {
     case 'h1':
       $("#hz1").show();
+      isStriked = true;
       break;
     case 'h2':
       $("#hz2").show();
+      isStriked = true;
       break;
     case 'h3':
       $("#hz3").show();
+      isStriked = true;
       break;
-    case 'v1':9
+    case 'v1':
       $("#vt1").show();
+      isStriked = true;
       break;
     case 'v2':
       $("#vt2").show();
+      isStriked = true;
       break;
     case 'v3':
       $('#vt3').show();
+      isStriked = true;
       break;
     case'd2':
       $('#dg2').show();
+      isStriked = true;
       break;
     case 'd1':
       $("#dg1").show();
+      isStriked = true;
   }
 
 }
@@ -94,9 +126,3 @@ function check(){
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value);
 }
-
-
-
-
-       
-  
